@@ -11,6 +11,7 @@ jobs:
       matrix:
         swoole: [php8.1, 4.8-php8.1, 4.8-php8.0, 4.8-php7.4]
     env:
+      SWOOLE_DOCKER_VERSION: ${{ matrix.swoole }}
       NACOS_VERSION: "v2.1.0"
       IMI_NACOS_HOST: nacos
     steps:
