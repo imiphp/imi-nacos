@@ -19,8 +19,6 @@ services:
       start_period: 5s
   swoole:
     container_name: "swoole"
-    depends_on:
-      - nacos
     environment:
       IMI_NACOS_HOST: ${IMI_NACOS_HOST}
     build:
