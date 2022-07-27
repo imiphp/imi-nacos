@@ -31,8 +31,8 @@
     },
     "repositories": {
         "imi-config-center": {
-            "type": "git",
-            "url": "git@github.com:imiphp/imi-config-center.git"
+            "type": "vcs",
+            "url": "https://github.com/imiphp/imi-config-center"
         }
     },
     "scripts": {},
