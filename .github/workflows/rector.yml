@@ -1,0 +1,29 @@
+name: Rector
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        swoole-docker: [4.8-php8.0]
+    env:
+      SWOOLE_DOCKER_VERSION: ${{ matrix.swoole-docker }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        run: |
+          docker-compose -f ./.github/docker-compose.yml up -d swoole
+          docker exec swoole php -v
+          docker exec swoole php -m
+          docker exec swoole php --ri swoole
+          docker exec swoole composer -V
+          docker exec swoole composer update --no-interaction --prefer-dist --no-progress
+
+      - name: Analyse
+        run: |
+          docker exec swoole ./vendor/bin/rector process --dry-run
