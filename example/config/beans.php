@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use function Imi\env;
 use Imi\Util\Imi;
 
 $rootPath = \dirname(__DIR__) . '/';
@@ -26,18 +27,19 @@ return [
         ], // 要排除的路径数组，支持通配符*
     ],
     'ConfigCenter' => [
-        // 'mode'    => \Imi\ConfigCenter\Enum\Mode::WORKER,
-        'mode'    => \Imi\ConfigCenter\Enum\Mode::PROCESS,
+        // 'mode'    => \Imi\ConfigCenter\Enum\Mode::WORKER, // 工作进程模式
+        // 'mode'    => \Imi\ConfigCenter\Enum\Mode::PROCESS, // 进程模式
+        'mode'    => env('IMI_CONFIG_CENTER_MODE', \Imi\ConfigCenter\Enum\Mode::PROCESS),
         'configs' => [
             'nacos' => [
                 'driver'  => \Imi\Nacos\Config\NacosConfigDriver::class,
                 // 客户端连接配置
                 'client'  => [
-                    'host'                => '127.0.0.1', // 主机名
-                    'port'                => 8848, // 端口号
-                    'prefix'              => '/', // 前缀
-                    'username'            => 'nacos', // 用户名
-                    'password'            => 'nacos', // 密码
+                    'host'                => env('IMI_NACOS_HOST', '127.0.0.1'), // 主机名
+                    'port'                => env('IMI_NACOS_PORT', 8848), // 端口号
+                    'prefix'              => env('IMI_NACOS_PREFIX', '/'), // 前缀
+                    'username'            => env('IMI_NACOS_USERNAME', 'nacos'), // 用户名
+                    'password'            => env('IMI_NACOS_PASSWORD', 'nacos'), // 密码
                     'timeout'             => 60000, // 网络请求超时时间，单位：毫秒
                     'ssl'                 => false, // 是否使用 ssl(https) 请求
                     'authorizationBearer' => false, // 是否使用请求头 Authorization: Bearer {accessToken} 方式传递 Token，旧版本 Nacos 需要设为 true

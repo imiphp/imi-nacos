@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="swoole">
+            <file>tests/SwooleWorkerTest.php</file>
+            <file>tests/SwooleProcessTest.php</file>
+        </testsuite>
+        <testsuite name="workerman">
+            <file>tests/WorkermanTest.php</file>
+        </testsuite>
+        <testsuite name="fpm">
+            <file>tests/FpmTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

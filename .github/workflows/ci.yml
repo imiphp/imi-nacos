@@ -1,0 +1,22 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  ci:
+    name: Linux Swoole-${{ matrix.swoole.version }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        swoole: [php8.1, 4.8-php8.1, 4.8-php8.0, 4.8-php7.4]
+    env:
+      NACOS_VERSION: "2.1.0"
+      IMI_NACOS_HOST: nacos
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare
+        run: docker exec swoole composer update
+      - name: Test
+        run: docker exec swoole composer test
