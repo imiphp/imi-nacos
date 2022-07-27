@@ -31,7 +31,7 @@ abstract class BaseTest extends TestCase
         for ($i = 0; $i < 60; ++$i)
         {
             sleep(1);
-            if ('imi' === $r = $httpRequest->timeout(3000)->get(self::$httpHost)->body())
+            if ('imi' === $httpRequest->timeout(3000)->get(self::$httpHost)->body())
             {
                 return;
             }
@@ -61,9 +61,14 @@ abstract class BaseTest extends TestCase
             'type'  => 'json',
         ]);
 
+        $cacheFileName = \dirname(__DIR__) . '/example/.runtime/config-cache/imi/imi-nacos-key1';
         for ($i = 0; $i < 10; ++$i)
         {
             sleep(1);
+            if (is_file($cacheFileName))
+            {
+                unlink($cacheFileName);
+            }
             $response = $httpRequest->get(self::$httpHost . '/get');
             if ([
                 'config' => $value,
