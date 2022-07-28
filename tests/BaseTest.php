@@ -21,7 +21,7 @@ abstract class BaseTest extends TestCase
     }
 
     /**
-     * This method is called before the first test of this test class is run.
+     * {@inheritDoc}
      */
     public static function setUpBeforeClass(): void
     {
@@ -40,7 +40,7 @@ abstract class BaseTest extends TestCase
     }
 
     /**
-     * This method is called after the last test of this test class is run.
+     * {@inheritDoc}
      */
     public static function tearDownAfterClass(): void
     {
@@ -62,7 +62,7 @@ abstract class BaseTest extends TestCase
         ]);
 
         $cacheFileName = \dirname(__DIR__) . '/example/.runtime/config-cache/imi/imi-nacos-key1';
-        for ($i = 0; $i < 10; ++$i)
+        for ($i = 0; $i < 15; ++$i)
         {
             sleep(1);
             if (is_file($cacheFileName))

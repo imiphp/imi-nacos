@@ -46,10 +46,11 @@ return [
                 ],
                 // 监听器配置
                 'listener' => [
-                    'timeout'        => 30000, // 配置监听器长轮询超时时间，单位：毫秒
-                    'failedWaitTime' => 3000, // 失败后等待重试时间，单位：毫秒
-                    'savePath'       => Imi::getRuntimePath('config-cache'), // 配置保存路径，默认为空不保存到文件。php-fpm 模式请一定要设置！
-                    'fileCacheTime'  => 30, // 文件缓存时间，默认为0时不受缓存影响，此配置只影响 pull 操作。php-fpm 模式请一定要设置为大于0的值！
+                    'timeout'         => 30000, // 配置监听器长轮询超时时间，单位：毫秒
+                    'failedWaitTime'  => 3000, // 失败后等待重试时间，单位：毫秒
+                    'savePath'        => Imi::getRuntimePath('config-cache'), // 配置保存路径，默认为空不保存到文件。php-fpm 模式请一定要设置！
+                    'fileCacheTime'   => 30, // 文件缓存时间，默认为0时不受缓存影响，此配置只影响 pull 操作。php-fpm 模式请一定要设置为大于0的值！
+                    'pollingInterval' => 10000, // 客户端轮询间隔时间，单位：毫秒
                 ],
                 // 配置项
                 'configs' => [

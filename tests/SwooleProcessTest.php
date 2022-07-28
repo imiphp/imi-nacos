@@ -13,4 +13,16 @@ class SwooleProcessTest extends BaseTest
         ]);
         $process->start();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function setUpBeforeClass(): void
+    {
+        if (!\extension_loaded('swoole'))
+        {
+            self::markTestSkipped('no swoole');
+        }
+        parent::setUpBeforeClass();
+    }
 }

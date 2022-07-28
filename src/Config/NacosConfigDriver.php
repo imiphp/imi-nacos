@@ -8,6 +8,7 @@ use Imi\App;
 use Imi\Event\Event;
 use Imi\Nacos\Config\Contract\INacosConfigDriver;
 use Imi\Nacos\Config\Event\Param\NacosConfigChangeEventParam;
+use Imi\Util\ImiPriority;
 use Yurun\Nacos\Client;
 use Yurun\Nacos\ClientConfig;
 use Yurun\Nacos\Provider\Config\ConfigListener;
@@ -33,7 +34,7 @@ class NacosConfigDriver implements INacosConfigDriver
         $this->client = $client = new Client(new ClientConfig($config['client'] ?? []), App::getBean('Logger')->getLogger());
         Event::on(['IMI.PROCESS.BEGIN', 'IMI.MAIN_SERVER.WORKER.START'], function () {
             $this->client->reopen();
-        });
+        }, ImiPriority::IMI_MAX);
         $listenerConfig = new ListenerConfig($config['listener'] ?? []);
         $this->configListener = $client->config->getConfigListener($listenerConfig);
     }
