@@ -57,6 +57,7 @@ return [
                     'nacos' => [
                         'key'   => 'imi-nacos-key1',
                         'group' => 'imi',
+                        'type'  => 'json',
                     ],
                 ],
             ],

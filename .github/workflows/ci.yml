@@ -4,15 +4,52 @@ on: [push, pull_request]
 
 jobs:
   ci:
-    name: Linux Swoole-${{ matrix.swoole }}
+    name: Linux Swoole-${{ matrix.swoole }} Nacos-${{ matrix.nacos }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        swoole: [php8.1, 4.8-php8.1, 4.8-php8.0, 4.8-php7.4]
+        swoole: [5.0-php8.1, 5.0-php8.0, 4.8-php8.1, 4.8-php8.0, 4.8-php7.4]
+        nacos: ["v2.1.0"]
     env:
       SWOOLE_DOCKER_VERSION: ${{ matrix.swoole }}
-      NACOS_VERSION: "v2.1.0"
+      NACOS_VERSION: ${{ matrix.nacos }}
+      IMI_NACOS_HOST: nacos
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare
+        run: |
+          docker-compose -f ./.github/docker-compose.yml up -d
+          docker exec swoole php -v
+          docker exec swoole php -m
+          docker exec swoole php --ri swoole
+          docker exec swoole composer -V
+          docker exec swoole composer update --no-interaction --prefer-dist --no-progress
+      - name: Wait for container
+        uses: stringbean/docker-healthcheck-action@v1
+        with:
+          container: nacos
+          wait-time: 120
+          require-status: running
+          require-healthy: true
+      - name: Test
+        run: docker exec swoole composer test
+      - name: Print logs
+        if: failure()
+        run: cat example/.runtime/logs/*.log
+
+  nacos:
+    name: Linux Swoole-${{ matrix.swoole }} Nacos-${{ matrix.nacos }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        swoole: [5.0-php8.1]
+        nacos: ["v2.0.4", "v1.4.3", "1.3.2", "1.2.1", "1.1.4", "1.0.1"]
+    env:
+      SWOOLE_DOCKER_VERSION: ${{ matrix.swoole }}
+      NACOS_VERSION: ${{ matrix.nacos }}
       IMI_NACOS_HOST: nacos
     steps:
       - name: Checkout

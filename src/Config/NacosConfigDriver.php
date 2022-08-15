@@ -82,13 +82,14 @@ class NacosConfigDriver implements INacosConfigDriver
      */
     public function get(string $key, bool $enableCache = true, array $options = [])
     {
+        $type = $options['type'] ?? null;
         if ($enableCache)
         {
-            return $this->configListener->getParsed($key, $options['group'] ?? '', $options['tenant'] ?? '');
+            return $this->configListener->getParsed($key, $options['group'] ?? '', $options['tenant'] ?? '', $type);
         }
         else
         {
-            return $this->client->config->getParsedConfig($key, $options['group'] ?? '', $options['tenant'] ?? '') ?: '';
+            return $this->client->config->getParsedConfig($key, $options['group'] ?? '', $options['tenant'] ?? '', $type) ?: '';
         }
     }
 
@@ -111,13 +112,14 @@ class NacosConfigDriver implements INacosConfigDriver
      */
     public function listen(string $imiConfigKey, string $key, array $options = []): void
     {
-        $this->configListener->addListener($key, $options['group'] ?? '', $options['tenant'] ?? '', function (ConfigListener $listener, string $dataId, string $group, string $tenant) use ($imiConfigKey) {
+        $this->configListener->addListener($key, $options['group'] ?? '', $options['tenant'] ?? '', function (ConfigListener $listener, string $dataId, string $group, string $tenant) use ($imiConfigKey, $options) {
+            $type = $options['type'] ?? null;
             Event::trigger('IMI.CONFIG_CENTER.CONFIG.CHANGE', [
                 'driver'      => $this,
                 'configKey'   => $imiConfigKey,
                 'key'         => $dataId,
                 'value'       => $listener->get($dataId, $group, $tenant),
-                'parsedValue' => $listener->getParsed($dataId, $group, $tenant),
+                'parsedValue' => $listener->getParsed($dataId, $group, $tenant, $type),
                 'options'     => [
                     'listener' => $listener,
                     'group'    => $group,

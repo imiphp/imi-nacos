@@ -67,6 +67,7 @@
                     'nacos' => [
                         'key'   => 'imi-nacos-key1',
                         'group' => 'imi',
+                        'type'  => 'json', // 配置内容类型，Nacos >= 1.3 可以不配，由配置项类型智能指定
                     ],
                 ],
             ],
@@ -102,10 +103,10 @@ QQ群：17916227 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "
 
 ## 运行环境
 
-- [PHP](https://php.net/) >= 7.4
-- [Composer](https://getcomposer.org/) >= 2.0
-- [Swoole](https://www.swoole.com/) >= 4.8.0
-- [imi](https://www.imiphp.com/) >= 2.1
+* [PHP](https://php.net/) >= 7.4
+* [Composer](https://getcomposer.org/) >= 2.0
+* [Swoole](https://www.swoole.com/) >= 4.8.0
+* [imi](https://www.imiphp.com/) >= 2.1
 
 ## 版权信息
 
