@@ -5,6 +5,8 @@ parameters:
 
     paths:
         - src
+        - tests
+        - example
 
     excludePaths:
         - */vendor/*

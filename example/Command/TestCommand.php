@@ -8,7 +8,6 @@ use Imi\Cli\Annotation\Command;
 use Imi\Cli\Annotation\CommandAction;
 use Imi\Cli\Contract\BaseCommand;
 use Imi\Config;
-use Imi\Swoole\Util\Coroutine;
 
 /**
  * @Command("test")

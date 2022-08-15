@@ -50,6 +50,7 @@ return (new PhpCsFixer\Config())
             ])
             ->in(__DIR__ . '/src')
             ->in(__DIR__ . '/tests')
+            ->in(__DIR__ . '/example')
             ->append([__FILE__])
     )
 ;
