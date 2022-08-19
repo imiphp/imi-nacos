@@ -4,8 +4,8 @@
     "license": "MulanPSL-2.0",
     "description": "imi 框架 Nacos 组件。imi Nacos component.",
     "require": {
-        "imiphp/imi-config-center": "2.1.x-dev",
-        "yurunsoft/nacos-php": "dev-master"
+        "imiphp/imi-config-center": "~2.1.0",
+        "yurunsoft/nacos-php": "~1.0.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~3.4.0",
@@ -27,12 +27,6 @@
         "psr-4": {
             "app\\": "example/",
             "Imi\\Nacos\\Test\\": "tests/"
-        }
-    },
-    "repositories": {
-        "imi-config-center": {
-            "type": "vcs",
-            "url": "https://github.com/imiphp/imi-config-center"
         }
     },
     "scripts": {
