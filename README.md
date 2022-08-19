@@ -15,19 +15,9 @@
 
 * [x] 配置中心
 
-## Composer
+## 安装
 
-本项目可以使用composer安装，遵循psr-4自动加载规则，在你的 `composer.json` 中加入下面的内容:
-
-```json
-{
-    "require": {
-        "imiphp/imi-nacos": "~2.1.0"
-    }
-}
-```
-
-然后执行 `composer update` 安装。
+`composer require imiphp/imi-nacos:~2.1.0`
 
 ## 使用说明
 
