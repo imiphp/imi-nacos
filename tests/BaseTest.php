@@ -28,7 +28,7 @@ abstract class BaseTest extends TestCase
         self::$httpHost = env('HTTP_SERVER_HOST', 'http://127.0.0.1:8080/');
         static::__startServer();
         $httpRequest = new HttpRequest();
-        for ($i = 0; $i < 60; ++$i)
+        for ($i = 0; $i < 20; ++$i)
         {
             sleep(1);
             if ('imi' === $httpRequest->timeout(3000)->get(self::$httpHost)->body())
