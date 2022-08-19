@@ -46,7 +46,7 @@ abstract class BaseTest extends TestCase
     {
         if (isset(self::$process))
         {
-            self::$process->stop();
+            self::$process->stop(10, \SIGTERM);
         }
     }
 
