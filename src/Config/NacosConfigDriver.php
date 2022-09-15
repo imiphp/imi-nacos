@@ -49,7 +49,7 @@ class NacosConfigDriver implements INacosConfigDriver
      */
     public function push(string $key, string $value, array $options = []): void
     {
-        $this->client->config->set($key, $options['group'] ?? '', $value, $options['tenant'] ?? '', $options['type'] ?? '');
+        $this->client->config->set($key, $options['group'] ?? 'DEFAULT_GROUP', $value, $options['tenant'] ?? '', $options['type'] ?? '');
     }
 
     /**
@@ -67,11 +67,11 @@ class NacosConfigDriver implements INacosConfigDriver
     {
         if ($enableCache)
         {
-            return $this->configListener->get($key, $options['group'] ?? '', $options['tenant'] ?? '');
+            return $this->configListener->get($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '');
         }
         else
         {
-            return $this->client->config->get($key, $options['group'] ?? '', $options['tenant'] ?? '') ?: '';
+            return $this->client->config->get($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '') ?: '';
         }
     }
 
@@ -85,11 +85,11 @@ class NacosConfigDriver implements INacosConfigDriver
         $type = $options['type'] ?? null;
         if ($enableCache)
         {
-            return $this->configListener->getParsed($key, $options['group'] ?? '', $options['tenant'] ?? '', $type);
+            return $this->configListener->getParsed($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', $type);
         }
         else
         {
-            return $this->client->config->getParsedConfig($key, $options['group'] ?? '', $options['tenant'] ?? '', $type) ?: '';
+            return $this->client->config->getParsedConfig($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', $type) ?: '';
         }
     }
 
@@ -98,7 +98,7 @@ class NacosConfigDriver implements INacosConfigDriver
      */
     public function delete($keys, array $options = []): void
     {
-        $group = $options['group'] ?? '';
+        $group = $options['group'] ?? 'DEFAULT_GROUP';
         $tenant = $options['tenant'] ?? '';
         $config = $this->client->config;
         foreach ($keys as $key)
@@ -112,7 +112,7 @@ class NacosConfigDriver implements INacosConfigDriver
      */
     public function listen(string $imiConfigKey, string $key, array $options = []): void
     {
-        $this->configListener->addListener($key, $options['group'] ?? '', $options['tenant'] ?? '', function (ConfigListener $listener, string $dataId, string $group, string $tenant) use ($imiConfigKey, $options) {
+        $this->configListener->addListener($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', function (ConfigListener $listener, string $dataId, string $group, string $tenant) use ($imiConfigKey, $options) {
             $type = $options['type'] ?? null;
             Event::trigger('IMI.CONFIG_CENTER.CONFIG.CHANGE', [
                 'driver'      => $this,

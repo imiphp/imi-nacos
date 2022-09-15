@@ -19,7 +19,7 @@ class NacosConfigChangeEventParam extends ConfigChangeEventParam
     {
         parent::__construct($eventName, $data, $target);
         $this->listener = $data['options']['listener'] ?? null;
-        $this->group = $data['options']['group'] ?? '';
+        $this->group = $data['options']['group'] ?? 'DEFAULT_GROUP';
         $this->tenant = $data['options']['tenant'] ?? '';
     }
 
