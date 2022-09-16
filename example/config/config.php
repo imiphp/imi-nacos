@@ -21,7 +21,7 @@ return [
     'mainServer'    => [
         'namespace'    => 'app\ApiServer',
         'type'         => \Imi\Swoole\Server\Type::HTTP,
-        'host'         => '127.0.0.1',
+        'host'         => '0.0.0.0',
         'port'         => 8080,
         'configs'      => [
             'worker_num'        => 1,
@@ -37,7 +37,7 @@ return [
         'http' => [
             'namespace'    => 'app\ApiServer',
             'type'         => \Imi\Workerman\Server\Type::HTTP,
-            'host'         => '127.0.0.1',
+            'host'         => '0.0.0.0',
             'port'         => 8080,
             'configs'      => [
             ],
