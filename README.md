@@ -93,6 +93,10 @@ $configCenter->getDriver('nacos')->push($name, $value, [
 
 ### 注册中心
 
+#### 引入依赖
+
+`composer require imiphp/imi-service`
+
 #### 配置
 
 `@app.beans`：
