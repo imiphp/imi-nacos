@@ -6,6 +6,8 @@ namespace Imi\Nacos\Test;
 
 class SwooleWorkerTest extends BaseTest
 {
+    protected string $registryServiceName = 'main';
+
     protected static function __startServer(): void
     {
         self::$process = $process = new \Symfony\Component\Process\Process([\PHP_BINARY, \dirname(__DIR__) . '/example/bin/imi-swoole', 'swoole/start'], null, [

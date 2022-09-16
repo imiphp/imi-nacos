@@ -17,6 +17,8 @@ abstract class BaseTest extends TestCase
 
     protected static string $httpHost = '';
 
+    protected string $registryServiceName = '';
+
     protected static function __startServer(): void
     {
         throw new \RuntimeException('You must implement the __startServer() method');
@@ -103,9 +105,7 @@ abstract class BaseTest extends TestCase
         $client = new Client($config);
         $response = $client->instance->list('main_test', 'DEFAULT_GROUP', '', '', true);
         $this->assertCount(1, $response->getHosts());
-
-        $response1 = $client->instance->list('main', 'DEFAULT_GROUP', '', '', true);
-        $response2 = $client->instance->list('http', 'DEFAULT_GROUP', '', '', true);
-        $this->assertTrue(1 === \count($response1->getHosts()) || 1 === \count($response2->getHosts()), sprintf('$response1=%d, $response2=%d', \count($response1->getHosts()), \count($response2->getHosts())));
+        $response = $client->instance->list($this->registryServiceName, 'DEFAULT_GROUP', '', '', true);
+        $this->assertCount(1, $response->getHosts());
     }
 }
