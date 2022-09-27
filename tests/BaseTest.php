@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Imi\Nacos\Test;
 
+use Imi\App;
 use function Imi\env;
+use Imi\Nacos\Service\NacosServiceDiscoveryDriver;
+use Imi\Service\Discovery\ServiceDiscovery;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
 use Yurun\Nacos\Client;
@@ -89,10 +92,38 @@ abstract class BaseTest extends TestCase
         $this->assertTrue(false);
     }
 
-    public function testNacosServiceRegistry(): void
+    public function testServiceRegistry(): void
     {
-        $config = new ClientConfig([
-            // 注册中心客户端连接配置，每个驱动不同
+        $config = new ClientConfig($this->getClientConfigArray());
+        $client = new Client($config);
+        $response = $client->instance->list('main_test', 'DEFAULT_GROUP', '', '', true);
+        $this->assertCount(1, $response->getHosts());
+        $response = $client->instance->list($this->registryServiceName, 'DEFAULT_GROUP', '', '', true);
+        $this->assertCount(1, $response->getHosts());
+    }
+
+    public function getServiceDiscovery(): void
+    {
+        $serviceDiscovery = App::newInstance(ServiceDiscovery::class, [
+            [
+                'driver'       => NacosServiceDiscoveryDriver::class, // 服务发现驱动
+                // 发现服务列表
+                'services' => [
+                    'main_test', // 服务名称
+                    $this->registryServiceName,
+                ],
+                'client' => $this->getClientConfigArray(),
+            ],
+        ]);
+        $this->assertNotNull($serviceDiscovery->getInstance('main_test'));
+        $this->assertNotNull($serviceDiscovery->getInstance($this->registryServiceName));
+        $this->assertNull($serviceDiscovery->getInstance(''));
+        $this->assertNull($serviceDiscovery->getInstance('not found'));
+    }
+
+    private function getClientConfigArray(): array
+    {
+        return [
             'host'                => env('IMI_NACOS_HOST', '127.0.0.1'), // 主机名
             'port'                => env('IMI_NACOS_PORT', 8848), // 端口号
             'prefix'              => env('IMI_NACOS_PREFIX', '/'), // 前缀
@@ -101,11 +132,6 @@ abstract class BaseTest extends TestCase
             'timeout'             => 60000, // 网络请求超时时间，单位：毫秒
             'ssl'                 => false, // 是否使用 ssl(https) 请求
             'authorizationBearer' => false, // 是否使用请求头 Authorization: Bearer {accessToken} 方式传递 Token，旧版本 Nacos 需要设为 true
-        ]);
-        $client = new Client($config);
-        $response = $client->instance->list('main_test', 'DEFAULT_GROUP', '', '', true);
-        $this->assertCount(1, $response->getHosts());
-        $response = $client->instance->list($this->registryServiceName, 'DEFAULT_GROUP', '', '', true);
-        $this->assertCount(1, $response->getHosts());
+        ];
     }
 }

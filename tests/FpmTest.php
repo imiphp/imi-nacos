@@ -12,7 +12,12 @@ class FpmTest extends BaseTest
         $process->start();
     }
 
-    public function testNacosServiceRegistry(): void
+    public function testServiceRegistry(): void
+    {
+        $this->markTestSkipped();
+    }
+
+    public function getServiceDiscovery(): void
     {
         $this->markTestSkipped();
     }
