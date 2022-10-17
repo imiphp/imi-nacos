@@ -147,7 +147,7 @@ $configCenter->getDriver('nacos')->push($name, $value, [
 ]
 ```
 
-### 服务发现
+### 服务发现（负载均衡）
 
 #### 引入依赖
 
