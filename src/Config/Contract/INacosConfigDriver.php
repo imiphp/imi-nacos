@@ -7,10 +7,13 @@ namespace Imi\Nacos\Config\Contract;
 use Imi\ConfigCenter\Contract\IConfigDriver;
 use Yurun\Nacos\Client;
 
-interface INacosConfigDriver extends IConfigDriver
+if (interface_exists(IConfigDriver::class))
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function getOriginClient(): Client;
+    interface INacosConfigDriver extends IConfigDriver
+    {
+        /**
+         * {@inheritDoc}
+         */
+        public function getOriginClient(): Client;
+    }
 }
