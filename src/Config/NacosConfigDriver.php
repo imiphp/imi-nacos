@@ -14,165 +14,168 @@ use Yurun\Nacos\ClientConfig;
 use Yurun\Nacos\Provider\Config\ConfigListener;
 use Yurun\Nacos\Provider\Config\Model\ListenerConfig;
 
-class NacosConfigDriver implements INacosConfigDriver
+if (interface_exists(INacosConfigDriver::class))
 {
-    protected string $name = '';
-
-    protected Client $client;
-
-    protected array $config = [];
-
-    protected ConfigListener $configListener;
-
-    protected bool $listening = false;
-
-    public function __construct(string $name, array $config)
+    class NacosConfigDriver implements INacosConfigDriver
     {
-        $this->name = $name;
-        $this->config = $config;
-        // @phpstan-ignore-next-line
-        $this->client = $client = new Client(new ClientConfig($config['client'] ?? []), App::getBean('Logger')->getLogger());
-        Event::on(['IMI.PROCESS.BEGIN', 'IMI.MAIN_SERVER.WORKER.START'], function () {
-            $this->client->reopen();
-        }, ImiPriority::IMI_MAX);
-        $listenerConfig = new ListenerConfig($config['listener'] ?? []);
-        $this->configListener = $client->config->getConfigListener($listenerConfig);
-    }
+        protected string $name = '';
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+        protected Client $client;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function push(string $key, string $value, array $options = []): void
-    {
-        $this->client->config->set($key, $options['group'] ?? 'DEFAULT_GROUP', $value, $options['tenant'] ?? '', $options['type'] ?? '');
-    }
+        protected array $config = [];
 
-    /**
-     * {@inheritDoc}
-     */
-    public function pull(bool $enableCache = true): void
-    {
-        $this->configListener->pull(!$enableCache);
-    }
+        protected ConfigListener $configListener;
 
-    /**
-     * 从配置中心获取配置原始数据.
-     */
-    public function getRaw(string $key, bool $enableCache = true, array $options = []): ?string
-    {
-        if ($enableCache)
+        protected bool $listening = false;
+
+        public function __construct(string $name, array $config)
         {
-            return $this->configListener->get($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '');
+            $this->name = $name;
+            $this->config = $config;
+            // @phpstan-ignore-next-line
+            $this->client = $client = new Client(new ClientConfig($config['client'] ?? []), App::getBean('Logger')->getLogger());
+            Event::on(['IMI.PROCESS.BEGIN', 'IMI.MAIN_SERVER.WORKER.START'], function () {
+                $this->client->reopen();
+            }, ImiPriority::IMI_MAX);
+            $listenerConfig = new ListenerConfig($config['listener'] ?? []);
+            $this->configListener = $client->config->getConfigListener($listenerConfig);
         }
-        else
-        {
-            return $this->client->config->get($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '') ?: '';
-        }
-    }
 
-    /**
-     * 从配置中心获取配置处理后的数据.
-     *
-     * @return mixed
-     */
-    public function get(string $key, bool $enableCache = true, array $options = [])
-    {
-        $type = $options['type'] ?? null;
-        if ($enableCache)
+        public function getName(): string
         {
-            return $this->configListener->getParsed($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', $type);
+            return $this->name;
         }
-        else
-        {
-            return $this->client->config->getParsedConfig($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', $type) ?: '';
-        }
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function delete($keys, array $options = []): void
-    {
-        $group = $options['group'] ?? 'DEFAULT_GROUP';
-        $tenant = $options['tenant'] ?? '';
-        $config = $this->client->config;
-        foreach ($keys as $key)
+        /**
+         * {@inheritDoc}
+         */
+        public function push(string $key, string $value, array $options = []): void
         {
-            $config->delete($key, $group, $tenant);
+            $this->client->config->set($key, $options['group'] ?? 'DEFAULT_GROUP', $value, $options['tenant'] ?? '', $options['type'] ?? '');
         }
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function listen(string $imiConfigKey, string $key, array $options = []): void
-    {
-        $this->configListener->addListener($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', function (ConfigListener $listener, string $dataId, string $group, string $tenant) use ($imiConfigKey, $options) {
+        /**
+         * {@inheritDoc}
+         */
+        public function pull(bool $enableCache = true): void
+        {
+            $this->configListener->pull(!$enableCache);
+        }
+
+        /**
+         * 从配置中心获取配置原始数据.
+         */
+        public function getRaw(string $key, bool $enableCache = true, array $options = []): ?string
+        {
+            if ($enableCache)
+            {
+                return $this->configListener->get($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '');
+            }
+            else
+            {
+                return $this->client->config->get($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '') ?: '';
+            }
+        }
+
+        /**
+         * 从配置中心获取配置处理后的数据.
+         *
+         * @return mixed
+         */
+        public function get(string $key, bool $enableCache = true, array $options = [])
+        {
             $type = $options['type'] ?? null;
-            Event::trigger('IMI.CONFIG_CENTER.CONFIG.CHANGE', [
-                'driver'      => $this,
-                'configKey'   => $imiConfigKey,
-                'key'         => $dataId,
-                'value'       => $listener->get($dataId, $group, $tenant),
-                'parsedValue' => $listener->getParsed($dataId, $group, $tenant, $type),
-                'options'     => [
-                    'listener' => $listener,
-                    'group'    => $group,
-                    'tenant'   => $tenant,
-                ],
-            ], $this, NacosConfigChangeEventParam::class);
-        });
-    }
+            if ($enableCache)
+            {
+                return $this->configListener->getParsed($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', $type);
+            }
+            else
+            {
+                return $this->client->config->getParsedConfig($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', $type) ?: '';
+            }
+        }
 
-    /**
-     * 执行一次轮询配置.
-     */
-    public function polling(): void
-    {
-        $this->configListener->polling(0);
-    }
+        /**
+         * {@inheritDoc}
+         */
+        public function delete($keys, array $options = []): void
+        {
+            $group = $options['group'] ?? 'DEFAULT_GROUP';
+            $tenant = $options['tenant'] ?? '';
+            $config = $this->client->config;
+            foreach ($keys as $key)
+            {
+                $config->delete($key, $group, $tenant);
+            }
+        }
 
-    /**
-     * 开始监听配置.
-     */
-    public function startListner(): void
-    {
-        $this->listening = true;
-        $this->configListener->start();
-    }
+        /**
+         * {@inheritDoc}
+         */
+        public function listen(string $imiConfigKey, string $key, array $options = []): void
+        {
+            $this->configListener->addListener($key, $options['group'] ?? 'DEFAULT_GROUP', $options['tenant'] ?? '', function (ConfigListener $listener, string $dataId, string $group, string $tenant) use ($imiConfigKey, $options) {
+                $type = $options['type'] ?? null;
+                Event::trigger('IMI.CONFIG_CENTER.CONFIG.CHANGE', [
+                    'driver'      => $this,
+                    'configKey'   => $imiConfigKey,
+                    'key'         => $dataId,
+                    'value'       => $listener->get($dataId, $group, $tenant),
+                    'parsedValue' => $listener->getParsed($dataId, $group, $tenant, $type),
+                    'options'     => [
+                        'listener' => $listener,
+                        'group'    => $group,
+                        'tenant'   => $tenant,
+                    ],
+                ], $this, NacosConfigChangeEventParam::class);
+            });
+        }
 
-    /**
-     * 停止监听配置.
-     */
-    public function stopListner(): void
-    {
-        $this->listening = false;
-        $this->configListener->stop();
-    }
+        /**
+         * 执行一次轮询配置.
+         */
+        public function polling(): void
+        {
+            $this->configListener->polling(0);
+        }
 
-    /**
-     * 是否正在监听.
-     */
-    public function isListening(): bool
-    {
-        return $this->listening;
-    }
+        /**
+         * 开始监听配置.
+         */
+        public function startListner(): void
+        {
+            $this->listening = true;
+            $this->configListener->start();
+        }
 
-    public function isSupportServerPush(): bool
-    {
-        return true;
-    }
+        /**
+         * 停止监听配置.
+         */
+        public function stopListner(): void
+        {
+            $this->listening = false;
+            $this->configListener->stop();
+        }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getOriginClient(): Client
-    {
-        return $this->client;
+        /**
+         * 是否正在监听.
+         */
+        public function isListening(): bool
+        {
+            return $this->listening;
+        }
+
+        public function isSupportServerPush(): bool
+        {
+            return true;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public function getOriginClient(): Client
+        {
+            return $this->client;
+        }
     }
 }
