@@ -25,7 +25,7 @@ if (interface_exists(IDiscoveryDriver::class))
         {
             $this->config = $config;
             // @phpstan-ignore-next-line
-            $this->client = new Client(new ClientConfig($config['client'] ?? []), App::getBean('Logger')->getLogger());
+            $this->client = new Client(new ClientConfig($config['clientConfig'] ?? []), App::getBean('Logger')->getLogger());
             Event::on(['IMI.PROCESS.BEGIN', 'IMI.MAIN_SERVER.WORKER.START'], function () {
                 $this->client->reopen();
             }, ImiPriority::IMI_MAX);

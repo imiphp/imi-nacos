@@ -19,4 +19,7 @@
             <file>tests/FpmTest.php</file>
         </testsuite>
     </testsuites>
+    <extensions>
+        <extension class="Imi\Nacos\Test\PHPUnitHook" />
+    </extensions>
 </phpunit>

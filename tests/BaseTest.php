@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Imi\Nacos\Test;
 
-use Imi\App;
+use Imi\Bean\BeanFactory;
 use function Imi\env;
 use Imi\Nacos\Service\NacosServiceDiscoveryDriver;
 use Imi\Service\Discovery\ServiceDiscovery;
@@ -102,9 +102,9 @@ abstract class BaseTest extends TestCase
         $this->assertCount(1, $response->getHosts());
     }
 
-    public function getServiceDiscovery(): void
+    public function testGetServiceDiscovery(): void
     {
-        $serviceDiscovery = App::newInstance(ServiceDiscovery::class, [
+        $serviceDiscovery = BeanFactory::newInstance(ServiceDiscovery::class, [
             [
                 'driver'       => NacosServiceDiscoveryDriver::class, // 服务发现驱动
                 // 发现服务列表
@@ -112,13 +112,29 @@ abstract class BaseTest extends TestCase
                     'main_test', // 服务名称
                     $this->registryServiceName,
                 ],
-                'client' => $this->getClientConfigArray(),
+                'clientConfig' => $this->getClientConfigArray(),
             ],
         ]);
         $this->assertNotNull($serviceDiscovery->getInstance('main_test'));
         $this->assertNotNull($serviceDiscovery->getInstance($this->registryServiceName));
-        $this->assertNull($serviceDiscovery->getInstance(''));
-        $this->assertNull($serviceDiscovery->getInstance('not found'));
+        try
+        {
+            $serviceDiscovery->getInstance('');
+            $this->assertTrue(false);
+        }
+        catch (\Throwable $th)
+        {
+            $this->assertEquals('Service [] does not exist', $th->getMessage());
+        }
+        try
+        {
+            $this->assertNull($serviceDiscovery->getInstance('not found'));
+            $this->assertTrue(false);
+        }
+        catch (\Throwable $th)
+        {
+            $this->assertEquals('Service [not found] does not exist', $th->getMessage());
+        }
     }
 
     private function getClientConfigArray(): array

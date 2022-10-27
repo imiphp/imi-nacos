@@ -172,7 +172,7 @@ $configCenter->getDriver('nacos')->push($name, $value, [
                 'services' => [
                     'serviceName', // 改为你的服务名称
                 ],
-                'client' => [
+                'clientConfig' => [
                     // Nacos 客户端连接配置
                     'host'                => '127.0.0.1', // 主机名
                     'port'                => 8848, // 端口号

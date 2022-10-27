@@ -17,7 +17,7 @@ class FpmTest extends BaseTest
         $this->markTestSkipped();
     }
 
-    public function getServiceDiscovery(): void
+    public function testGetServiceDiscovery(): void
     {
         $this->markTestSkipped();
     }
